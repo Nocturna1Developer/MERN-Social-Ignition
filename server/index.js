@@ -8,15 +8,18 @@ import multer from "multer";
 import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
+import User from "./models/User.js";
+import Post from "./models/Post.js";
 
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
-import postRoutes from "./routs/posts.js";
+import postRoutes from "./routes/posts.js";
 
 import { fileURLToPath } from "url";
 import { register } from "./controllers/auth.js";
 import { verifyToken } from "./middleware/auth.js";
 import { createPost } from "./controllers/posts.js";
+import { users, posts } from "./data/index.js";
 
 /* 
 * CONFIGURATIONS - Middleware runs in between things
@@ -64,6 +67,7 @@ app.post("/posts", verifyToken, upload.single("picture"), createPost);
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
+//app.use(express.static('../client'));
 
 /*
 * AUTHORIZATION- make sure someone is already logged in and perform certain actions like check your list of friends
@@ -80,6 +84,11 @@ mongoose.connect(process.env.MONGO_URL, {
     useUnifiedTopology: true,
 }).then(() => {
     app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+
+    // *ADD THIS MOCK DATA ONE TIME
+    //User.insertMany(users);
+    //Post.insertMany(posts);
+
 }).catch((error) => console.log(`${error} did not connect`));
 
 //mongoose.set('strictQuery', true);
