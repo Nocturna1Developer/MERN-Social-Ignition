@@ -23,11 +23,11 @@ import FlexBetween from "components/FlexBetween";
 const registerSchema = yup.object().shape({
     firstName: yup.string().required("required"),
     lastName: yup.string().required("required"),
-    password: yup.string().required("required"),
     email: yup.string().email("invalid email").required("required"),
+    password: yup.string().required("required"),
     location: yup.string().required("required"),
     occupation: yup.string().required("required"),
-    picture: yup.string().required("required")
+    picture: yup.string().required("required"),
 });
 
 const loginSchema = yup.object().shape({
@@ -35,7 +35,7 @@ const loginSchema = yup.object().shape({
     password: yup.string().required("required"),
 });
 
-const InitialValueRegister = {
+const initialValuesRegister = {
     firstName: "",
     lastName: "",
     email: "",
@@ -45,28 +45,67 @@ const InitialValueRegister = {
     picture: "",
 };
 
-const InitialValueLogin = {
+
+const initialValuesLogin = {
     email: "",
     password: "",
 };
 
 const Form = () => {
     const [pageType, setPageType] = useState("login");
-    const [palette] = useTheme();
+    const { palette } = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const isNonMobile = useMediaQuery();
+    const isNonMobile = useMediaQuery("(min-width:600px)");
     const isLogin = pageType === "login";
     const isRegister = pageType === "register";
 
     const register = async (values, onSubmitProps) => {
+        // allows us to send form info with this image
+        // use every key value and add to form data
+        const formData = new FormData();
+        for (let value in values) {
+            formData.append(value, values[value]);
+        }
+        // in server/public/assets images/name of the file
+        formData.append("picturePath", values.picture.name);;
 
+        // sends form data to this API call
+        const savedUserResponse = await fetch(
+            "http://localhost:3001/auth/register",
+            {
+                method: "POST",
+                body: formData,
+            }
+        );
+        const savedUser = await savedUserResponse.json();
+        onSubmitProps.resetForm();
+
+        if (savedUser) {
+            setPageType("login");
+        }
 
     };
 
     const login = async (values, onSubmitProps) => {
-
-
+        const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(values),
+        });
+        
+        const loggedIn = await loggedInResponse.json();
+        onSubmitProps.resetForm();
+        if (loggedIn) {
+            dispatch(
+                setLogin({
+                    // comes from client/index.js (our redux state)
+                    user: loggedIn.user,
+                    token: loggedIn.token,
+                })
+            );
+            navigate("/home");
+        }
     };
 
     // The logic when the button is pressed runs " <form onSubmit={handleSubmit}>"

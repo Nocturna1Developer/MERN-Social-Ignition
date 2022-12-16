@@ -13,8 +13,11 @@ function App() {
   // gets the value form "initial state" in .state/index.js
   const mode = useSelector((state) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+  
+  // if token exists, then we are authorized
+  const isAuth = Boolean(useSelector((state) => state.token));
 
-  // cssbaseline resets our css
+  // Cssbaseline resets our css
   return (
     <div className="app">
       <BrowserRouter>
@@ -22,8 +25,14 @@ function App() {
           <CssBaseline />
           <Routes>
             <Route path="/" element={<LoginPage />} />
-            <Route path="/home" element={<HomePage />} />
-            <Route path="/profile/:userId" element={<ProfilePage />} />
+            <Route
+              path="/home"
+              element={isAuth ? <HomePage /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/profile/:userId"
+              element={isAuth ? <ProfilePage /> : <Navigate to="/" />}
+            />
           </Routes>
         </ThemeProvider>
       </BrowserRouter>
@@ -31,21 +40,4 @@ function App() {
   );
 }
 
-
 export default App;
-
-
-/* <header className="App-header">
-  <img src={logo} className="App-logo" alt="logo" />
-  <p>
-    Edit <code>src/App.js</code> and save to reload.
-  </p>
-  <a
-    className="App-link"
-    href="https://reactjs.org"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    Learn React
-  </a>
-</header> */

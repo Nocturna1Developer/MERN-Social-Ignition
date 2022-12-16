@@ -12,8 +12,8 @@ const LoginPage = () => {
                 p="1rem 6%"
                 textAlign="center"
             >
-                <Typography fontWeight="bold" fontSize="32px" color="primary">
-                    Social Ignition
+                <Typography fontWeight="bold" fontSize="32px" color="black">
+                    S O C I A L - I G N I T I O N
                 </Typography>
             </Box>
 

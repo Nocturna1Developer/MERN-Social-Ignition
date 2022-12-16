@@ -47,7 +47,7 @@ export const authSlice = createSlice({
         // only change updated post from the backend
         setPost: (state, action) => {
             const updatedPosts = state.posts.map((post) => {
-                if (post.id === action.payload.post_id)
+                if (post.id === action.payload.post._id)
                     return action.payload.post;
                 else
                     return post;
@@ -56,7 +56,7 @@ export const authSlice = createSlice({
             state.posts = updatedPosts;
         }
     }
-})
+});
 
 export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost } = authSlice.actions;
 export default authSlice.reducer;
