@@ -49,7 +49,7 @@ const storage = multer.diskStorage({
         cb(null, "public/assets");
     },
     filename: function (req, file, cb) {
-        cb(null, file.orginalname);
+        cb(null, file.originalname);
     }
 });
 const upload = multer({ storage });
@@ -57,6 +57,9 @@ const upload = multer({ storage });
 /* 
 * AUTHENTICATION - register and login - Routes with files
 * grabs the image located in the http call and uploads it
+/*
+* AUTHORIZATION- make sure someone is already logged in and perform certain actions like check your list of friends
+* /
 */
 app.post("/auth/register", upload.single("picture"), register);
 app.post("/posts", verifyToken, upload.single("picture"), createPost);
@@ -69,11 +72,9 @@ app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
 //app.use(express.static('../client'));
 
-/*
-* AUTHORIZATION- make sure someone is already logged in and perform certain actions like check your list of friends
-* /
-
-
+app.get('/', function (req, res) {
+    res.render('index', {});
+})
 
 /* 
 * MONGOOSE SETUP - from .env file
@@ -89,6 +90,6 @@ mongoose.connect(process.env.MONGO_URL, {
     //User.insertMany(users);
     //Post.insertMany(posts);
 
-}).catch((error) => console.log(`${error} did not connect`));
+}).catch((error) => console.log(`${error} did not connect!!!!!!!!!!!!!!!!!!!!!!!!!!!!`));
 
 //mongoose.set('strictQuery', true);

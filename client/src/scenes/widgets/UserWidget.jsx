@@ -35,7 +35,8 @@ const UserWidget = ({ userId, picturePath }) => {
 
     useEffect(() => {
         getUser();
-    }, []) // page is empty when you enter, getuser is called, because array is empty
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    // page is empty when you enter, getuser is called, because array is empty
 
     // usually there would be a loading state
     if (!user) {
